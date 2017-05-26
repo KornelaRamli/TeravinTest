@@ -1,0 +1,21 @@
+use master
+
+CREATE DATABASE Teravin_Test
+
+USE Teravin_Test
+
+CREATE TABLE ListUser
+(
+	UserID char(5) PRIMARY KEY NOT NULL,
+	Nama varchar (50) NOT NULL,
+	No_HP varchar (15) NOT NULL,
+	Email varchar (50) NOT NULL
+);
+
+CREATE TABLE ListAlamat
+(
+	UserID char(5) NOT NULL,
+	Alamat varchar (150) NOT Null,
+	PRIMARY KEY(UserID, Alamat),
+	FOREIGN KEY (UserID) REFERENCES ListUser(UserID)
+);
