@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -9,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.*;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -274,7 +276,22 @@ public class AddScreen {
 				String hp = HpTxt.getText().trim();
 				JOptionPane.showMessageDialog(null, hp);
 				String email = EmailTxt.getText();
-				String alamat = AlamatTXt.getText();
+				
+				boolean flagAlamat = true;
+				String alamat2[]=new String[10];
+				Component[] al2Comp = Al2.getComponents();
+				for (int i = 0; i < al2Comp.length; i++) {
+					if(al2Comp[i]instanceof JTextField)
+					{
+						alamat2[i] = ((JTextField)al2Comp[i]).getText();
+						if(alamat2[i].equals("")){
+							flagAlamat=false;
+						}
+						else{
+							
+						}
+					}
+				}			
 				
 				boolean flag = true;
 				try {
@@ -285,8 +302,11 @@ public class AddScreen {
 					flag=false;
 				}
 				
-				if (nama.equals("")||hp.equals("")||email.equals("")||alamat.equals("")) {
+				if (nama.equals("")||hp.equals("")||email.equals("")) {
 					JOptionPane.showMessageDialog(null, "Semua Field Harus Diisi!");
+				}
+				else if(nama.length()>50) {
+					JOptionPane.showMessageDialog(null, "Semua Field Alamat Harus Diisi!");
 				}
 				else if(nama.length()>50) {
 					JOptionPane.showMessageDialog(null, "Nama Max 50 Karakter");
@@ -303,7 +323,10 @@ public class AddScreen {
 						rs = readTable("SELECT UserID from ListUser Order By UserID desc");
 						
 						if(!rs.next()){								
-							updateTable("INSERT into UserID VALUES ('"+id+"','"+nama+"','"+hp+"','"+email+"')");						
+							updateTable("INSERT into ListUser VALUES ('"+id+"','"+nama+"','"+hp+"','"+email+"')");
+							for (int i = 0; i < alamat2.length; i++) {
+								updateTable("INSERT into ListAlamat VALUES ('"+id+"','"+alamat2[i]+"')");
+							}
 						}
 						else{
 							String idAkhir = rs.getString(1);
@@ -312,11 +335,14 @@ public class AddScreen {
 							String idBaru= Integer.toString(intID);
 							
 							updateTable("INSERT into UserID VALUES ('"+idBaru+"','"+nama+"','"+hp+"','"+email+"')");
-							
-							JOptionPane.showMessageDialog(null,"Succes");
-							ListScreen ListScreen = new ListScreen();
-							AddScreenFrame.dispose();
+							for (int i = 0; i < alamat2.length; i++) {
+								updateTable("INSERT into ListAlamat VALUES ('"+id+"','"+alamat2[i]+"')");
+							}
+												
 						}
+						JOptionPane.showMessageDialog(null,"Success");
+						ListScreen ListScreen = new ListScreen();
+						AddScreenFrame.dispose();
 					} catch (Exception e2) {
 						JOptionPane.showMessageDialog(null, e2);
 					}					
